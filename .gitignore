@@ -21,3 +21,7 @@ Thumbs.db
 # Optional: build output or compiled files
 dist/
 build/
+
+# .gitignore
+node_modules/
+.env
