@@ -21,7 +21,8 @@ const commands = [];
 // Load command files from folder and prepare them for registration
 const loadCommands = () => {
     // Loads from these folders
-    const folders = ['./music', 
+    const folders = [
+        './music', 
         './Entertainment', 
         './Mini-Games', 
         './Mini-Games/hangman'
