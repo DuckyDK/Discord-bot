@@ -20,7 +20,6 @@ const commands = [];
 
 // Load command files from folder and prepare them for registration
 const loadCommands = () => {
-    // Loads from these folders
     const folders = [
         './music', 
         './Entertainment', 
@@ -29,18 +28,23 @@ const loadCommands = () => {
     ];
 
     for (const folder of folders) {
+        if (!fs.existsSync(folder)) {
+            console.warn(`⚠️ Skipped missing folder: ${folder}`);
+            continue;
+        }
+
         const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.js'));
 
         if (commandFiles.length === 0) {
-            console.error(`No commands found in the '${folder}' folder.`);
-            process.exit(1); // Stop if no commands found
+            console.warn(`⚠️ No commands found in the '${folder}' folder.`);
+            continue;
         }
 
         for (const file of commandFiles) {
             const command = require(`${folder}/${file}`);
             if (command.data && command.data.name) {
-                client.commands.set(command.data.name, command);      // Store in memory
-                commands.push(command.data.toJSON());                 // Prepare for Discord registration
+                client.commands.set(command.data.name, command);
+                commands.push(command.data.toJSON());
                 console.log(`Loaded command: ${command.data.name}`);
             } else {
                 console.warn(`Skipped '${file}' - missing data or name`);
@@ -58,7 +62,7 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
     try {
         console.log('Refreshing slash commands...');
         await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID), // Global registration
+            Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands }
         );
         console.log('Slash commands registered successfully.');
@@ -79,10 +83,9 @@ client.on('interactionCreate', async interaction => {
     }
 
     try {
-        await command.execute(client, interaction); // Execute the command logic
+        await command.execute(client, interaction);
     } catch (error) {
         console.error(`Error executing command '${interaction.commandName}':`, error);
-        // Graceful fallback if something goes wrong during execution
         if (interaction.replied || interaction.deferred) {
             await interaction.followUp({ content: 'Der opstod en fejl under kommandoen.', ephemeral: true });
         } else {
@@ -97,5 +100,6 @@ client.once('ready', () => {
     client.user.setActivity('/help', { type: ActivityType.Listening });
     client.user.setStatus('online');
 });
+
 // Log in using the bot token
 client.login(process.env.DISCORD_TOKEN);
