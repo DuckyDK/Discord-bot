@@ -22,7 +22,7 @@ const loadCommands = () => {
         'music',
         'Entertainment',
         'Mini-Games',
-        'Mini-Games/hangman'
+        'Mini-Games/hangman',
     ];
 
     for (const folder of folders) {
@@ -47,7 +47,7 @@ const loadCommands = () => {
                 commands.push(command.data.toJSON());
                 console.log(`Loaded command: ${command.data.name}`);
             } else {
-                console.warn(`Skipped '${file}' - missing data or name`);
+                console.warn(`⚠️ Skipped '${file}' - missing data or name`);
             }
         }
     }
@@ -59,14 +59,21 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
-        console.log('Refreshing slash commands...');
+        console.log('⏳ Deleting old global commands...');
+        const existing = await rest.get(Routes.applicationCommands(process.env.CLIENT_ID));
+        for (const cmd of existing) {
+            await rest.delete(Routes.applicationCommand(process.env.CLIENT_ID, cmd.id));
+            console.log(`❌ Deleted: ${cmd.name}`);
+        }
+
+        console.log('✅ Registering new global commands...');
         await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands }
         );
-        console.log('Slash commands registered successfully.');
+        console.log('🎉 Slash commands registered successfully.');
     } catch (error) {
-        console.error('Failed to register commands:', error);
+        console.error('❌ Failed to register commands:', error);
         process.exit(1);
     }
 })();
@@ -76,24 +83,24 @@ client.on('interactionCreate', async interaction => {
 
     const command = client.commands.get(interaction.commandName);
     if (!command) {
-        console.error(`Command not found: ${interaction.commandName}`);
+        console.error(`⚠️ Command not found: ${interaction.commandName}`);
         return;
     }
 
     try {
         await command.execute(client, interaction);
     } catch (error) {
-        console.error(`Error executing command '${interaction.commandName}':`, error);
+        console.error(`💥 Error executing command '${interaction.commandName}':`, error);
         if (interaction.replied || interaction.deferred) {
-            await interaction.followUp({ content: 'Der opstod en fejl under kommandoen.', ephemeral: true });
+            await interaction.followUp({ content: '❗ Der opstod en fejl under kommandoen.', ephemeral: true });
         } else {
-            await interaction.reply({ content: 'Der opstod en fejl under kommandoen.', ephemeral: true });
+            await interaction.reply({ content: '❗ Der opstod en fejl under kommandoen.', ephemeral: true });
         }
     }
 });
 
 client.once('ready', () => {
-    console.log(`Logged in as ${client.user.tag}`);
+    console.log(`🤖 Logged in as ${client.user.tag}`);
     client.user.setActivity('/help', { type: ActivityType.Listening });
     client.user.setStatus('online');
 });
