@@ -1,10 +1,10 @@
 const { Client, GatewayIntentBits, Collection, ActivityType } = require('discord.js');
 const { REST } = require('@discordjs/rest');
-const { Routes } = require('discord-api-types/v9');
+const { Routes } = require('discord-api-types/v10');
 const fs = require('fs');
+const path = require('path');
 require('dotenv').config();
 
-// Initialize the Discord client with necessary intents
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -14,26 +14,25 @@ const client = new Client({
     ],
 });
 
-// Set up command collection and array for registering with Discord
 client.commands = new Collection();
 const commands = [];
 
-// Load command files from folder and prepare them for registration
 const loadCommands = () => {
     const folders = [
-        './music/', 
-        './Entertainment/', 
-        './Mini-Games/', 
-        './Mini-Games/hangman/'
+        'music',
+        'Entertainment',
+        'Mini-Games',
+        'Mini-Games/hangman'
     ];
 
     for (const folder of folders) {
-        if (!fs.existsSync(folder)) {
+        const folderPath = path.join(__dirname, folder);
+        if (!fs.existsSync(folderPath)) {
             console.warn(`⚠️ Skipped missing folder: ${folder}`);
             continue;
         }
 
-        const commandFiles = fs.readdirSync(folder).filter(file => file.endsWith('.js'));
+        const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
 
         if (commandFiles.length === 0) {
             console.warn(`⚠️ No commands found in the '${folder}' folder.`);
@@ -41,7 +40,8 @@ const loadCommands = () => {
         }
 
         for (const file of commandFiles) {
-            const command = require(`${folder}/${file}`);
+            const commandPath = path.join(folderPath, file);
+            const command = require(commandPath);
             if (command.data && command.data.name) {
                 client.commands.set(command.data.name, command);
                 commands.push(command.data.toJSON());
@@ -55,8 +55,7 @@ const loadCommands = () => {
 
 loadCommands();
 
-// Register slash commands globally with Discord's API
-const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
+const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
@@ -72,7 +71,6 @@ const rest = new REST({ version: '9' }).setToken(process.env.DISCORD_TOKEN);
     }
 })();
 
-// Handle slash command interactions
 client.on('interactionCreate', async interaction => {
     if (!interaction.isCommand()) return;
 
@@ -94,12 +92,10 @@ client.on('interactionCreate', async interaction => {
     }
 });
 
-// When bot is ready, set activity and status
 client.once('ready', () => {
     console.log(`Logged in as ${client.user.tag}`);
     client.user.setActivity('/help', { type: ActivityType.Listening });
     client.user.setStatus('online');
 });
 
-// Log in using the bot token
 client.login(process.env.DISCORD_TOKEN);
