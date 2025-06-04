@@ -51,12 +51,29 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
-        console.log('⏳ Registering slash commands...');
-        await rest.put(
-            Routes.applicationCommands(process.env.CLIENT_ID),
-            { body: commands }
+        console.log('⏳ Fetching existing global commands...');
+        const existingCommands = await rest.get(
+            Routes.applicationCommands(process.env.CLIENT_ID)
         );
-        console.log('✅ Slash commands registered successfully.');
+
+        const existingCommandNames = existingCommands.map(cmd => cmd.name);
+        const currentCommandNames = commands.map(cmd => cmd.name);
+
+        for (const cmd of existingCommands) {
+            if (!currentCommandNames.includes(cmd.name)) {
+                await rest.delete(
+                    Routes.applicationCommand(process.env.CLIENT_ID, cmd.id)
+                );
+                console.log(`🗑️ Deleted old command: ${cmd.name}`);
+            }
+        }
+
+        console.log('⏳ Registering/updating current global commands...');
+        await rest.put(Routes.applicationCommands(process.env.CLIENT_ID), { body: commands });
+        console.log('✅ Slash commands registered/updated successfully.');
+
+        await client.login(process.env.DISCORD_TOKEN);
+
     } catch (error) {
         console.error('❌ Failed to register slash commands:', error);
         process.exit(1);
@@ -86,5 +103,3 @@ client.once('ready', () => {
     client.user.setActivity('/help', { type: ActivityType.Listening });
     client.user.setStatus('online');
 });
-
-client.login(process.env.DISCORD_TOKEN);
