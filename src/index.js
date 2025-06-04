@@ -28,16 +28,10 @@ const loadCommands = () => {
     for (const folder of folders) {
         const folderPath = path.join(__dirname, folder);
         if (!fs.existsSync(folderPath)) {
-            console.warn(`⚠️ Skipped missing folder: ${folder}`);
             continue;
         }
 
         const commandFiles = fs.readdirSync(folderPath).filter(file => file.endsWith('.js'));
-
-        if (commandFiles.length === 0) {
-            console.warn(`⚠️ No commands found in the '${folder}' folder.`);
-            continue;
-        }
 
         for (const file of commandFiles) {
             const commandPath = path.join(folderPath, file);
@@ -45,9 +39,7 @@ const loadCommands = () => {
             if (command.data && command.data.name) {
                 client.commands.set(command.data.name, command);
                 commands.push(command.data.toJSON());
-                console.log(`Loaded command: ${command.data.name}`);
-            } else {
-                console.warn(`⚠️ Skipped '${file}' - missing data or name`);
+                console.log(`✅ Loaded command: ${file}`);
             }
         }
     }
@@ -59,21 +51,14 @@ const rest = new REST({ version: '10' }).setToken(process.env.DISCORD_TOKEN);
 
 (async () => {
     try {
-        console.log('⏳ Deleting old global commands...');
-        const existing = await rest.get(Routes.applicationCommands(process.env.CLIENT_ID));
-        for (const cmd of existing) {
-            await rest.delete(Routes.applicationCommand(process.env.CLIENT_ID, cmd.id));
-            console.log(`❌ Deleted: ${cmd.name}`);
-        }
-
-        console.log('✅ Registering new global commands...');
+        console.log('⏳ Registering slash commands...');
         await rest.put(
             Routes.applicationCommands(process.env.CLIENT_ID),
             { body: commands }
         );
-        console.log('🎉 Slash commands registered successfully.');
+        console.log('✅ Slash commands registered successfully.');
     } catch (error) {
-        console.error('❌ Failed to register commands:', error);
+        console.error('❌ Failed to register slash commands:', error);
         process.exit(1);
     }
 })();
@@ -82,10 +67,7 @@ client.on('interactionCreate', async interaction => {
     if (!interaction.isChatInputCommand()) return;
 
     const command = client.commands.get(interaction.commandName);
-    if (!command) {
-        console.error(`⚠️ Command not found: ${interaction.commandName}`);
-        return;
-    }
+    if (!command) return;
 
     try {
         await command.execute(client, interaction);
