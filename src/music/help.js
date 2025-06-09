@@ -38,7 +38,7 @@ module.exports = {
                     { name: '/resume', value: 'Fortsætter den pausede sang' },
                     { name: '', value: '' }
                 )
-                .setFooter({ text: 'Lavet af DuckyDK - Side 1/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/3bfa9c975ad10c50aafd7fe504f9b8b5.webp?size=40' });
+                .setFooter({ text: 'Lavet af DuckyDK - Side 1/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/246497f693c65a1b41e27f2fa2b25f15.webp?size=80' });
 
         } else if (page === 2) {
             helpEmbed = new EmbedBuilder()
@@ -55,7 +55,7 @@ module.exports = {
                     { name: '/meme', value: 'Sender en tilfældig meme' },
                     { name: '', value: '' }
                 )
-                .setFooter({ text: 'Lavet af DuckyDK - Side 2/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/3bfa9c975ad10c50aafd7fe504f9b8b5.webp?size=40' });
+                .setFooter({ text: 'Lavet af DuckyDK - Side 2/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/246497f693c65a1b41e27f2fa2b25f15.webp?size=80' });
 
         } else if (page === 3) {
             helpEmbed = new EmbedBuilder()
@@ -70,7 +70,7 @@ module.exports = {
                     { name: '/guess', value: 'Gæt på et bogstav i hangman' },
                     { name: '', value: '' }
                 )
-                .setFooter({ text: 'Lavet af DuckyDK - Side 3/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/3bfa9c975ad10c50aafd7fe504f9b8b5.webp?size=40' });
+                .setFooter({ text: 'Lavet af DuckyDK - Side 3/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/246497f693c65a1b41e27f2fa2b25f15.webp?size=80' });
         } else {
             return interaction.reply({ content: "Den side findes ikke. Vælg en side mellem 1 og 3.", ephemeral: true });
         }
