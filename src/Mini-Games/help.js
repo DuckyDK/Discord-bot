@@ -61,13 +61,16 @@ module.exports = {
                 .setTitle('🕹️   Mini-Games Commands')
                 .setDescription('Liste over mini-game commands:')
                 .addFields(
-                    { name: '/help', value: 'Viser den her liste over commands' },
-                    { name: '', value: '' },
+
                     { name: '/rps', value: 'Spil sten-saks-papir mod botten' },
                     { name: '', value: '' },
                     { name: '/hangman', value: 'Start et spil hangman\n  ' },
                     { name: '/guessword', value: 'Gæt på hele ordet i hangman\n  ' },
                     { name: '/guess', value: 'Gæt på et bogstav i hangman' },
+                    { name: '', value: '' },
+                    { name: '/help', value: 'Viser den her liste over commands' },
+                    { name: '', value: '' },
+                    { name: '/about', value: 'Få information om botten' },
                     { name: '', value: '' }
                 )
                 .setFooter({ text: 'Lavet af DuckyDK - Side 3/3', iconURL: 'https://cdn.discordapp.com/avatars/422112484120592394/246497f693c65a1b41e27f2fa2b25f15.webp?size=80' });
