@@ -18,7 +18,7 @@ module.exports = {
                 { name: '', value: '' },
                 { name: '🎉   Underholdning', value: 'andre diverse commands' },
                 { name: '', value: '' },
-                { name: '📎   Links', value: '[Invitér mig](https://discord.com/oauth2/authorize?client_id=608420019147243616&permissions=8&scope=bot%20applications.commands)' },
+                { name: '📎   Link', value: '[Invitér mig](https://discord.com/oauth2/authorize?client_id=608420019147243616&permissions=8&scope=bot%20applications.commands)' },
                 { name: '', value: '' }
             )
             .setFooter({ 
