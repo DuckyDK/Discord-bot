@@ -21,8 +21,6 @@ module.exports = {
                 .setTitle('🎶   Musik Commands')
                 .setDescription('Liste over musik commands:')
                 .addFields(
-                    { name: '/help', value: 'Viser den her liste over commands' },
-                    { name: '', value: '' },
                     { name: '/play', value: 'Afspiller en sang' },
                     { name: '', value: '' },
                     { name: '/stop', value: 'Stopper sangen og leaver voice kanalen' },
@@ -63,6 +61,8 @@ module.exports = {
                 .setTitle('🕹️   Mini-Games Commands')
                 .setDescription('Liste over mini-game commands:')
                 .addFields(
+                    { name: '/help', value: 'Viser den her liste over commands' },
+                    { name: '', value: '' },
                     { name: '/rps', value: 'Spil sten-saks-papir mod botten' },
                     { name: '', value: '' },
                     { name: '/hangman', value: 'Start et spil hangman\n  ' },
